@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Ontology Links</title>
+    <style>
+      * {
+        text-align: center;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+      }
+      /* Display links in a single row */
+      .link-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 50px;
+        justify-content: center;
+      }
+      /* Style for ontology links */
+      .ontology-link {
+        text-decoration: none;
+        color: black;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px;
+        width: 90px;
+        height: 90px;
+
+        border-radius: 50%;
+        border: 2px solid purple;
+        background: linear-gradient(145deg, #b664b6, #d877d8);
+        box-shadow:  10px 10px 30px #2125296b,
+               -10px -10px 30px #ffffffa6;
+      }
+      /* Style for ontology level 2 links */
+      .ontologylevel2-link {
+        text-decoration: none;
+        color: black;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        width: 90px;
+        height: 90px;
+        justify-content: center;
+
+        border-radius: 50%;
+        border: 2px solid orangered;
+        background: linear-gradient(145deg, #ffab83, #e6906e);
+        box-shadow:  10px 10px 30px #2125296b,
+               -10px -10px 30px #ffffffa6;
+      }
+      /* Style for ontology level 3 links */
+      .ontologylevel3-link {
+        text-decoration: none;
+        color: black;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        width: 90px;
+        height: 90px;
+        justify-content: center;
+
+        border-radius: 50%;
+        border: 2px solid darkgreen;
+        background: linear-gradient(145deg, #9aff9a, #82d682);
+        box-shadow:  10px 10px 30px #2125296b,
+               -10px -10px 30px #ffffffa6;
+      }
+      /* Style for ontology level 4 links */
+      .ontologylevel4-link {
+        text-decoration: none;
+        color: black;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        width: 90px;
+        height: 90px;
+        justify-content: center;
+
+        border-radius: 50%;
+        border: 2px solid darkblue;
+        background: linear-gradient(145deg, #b9e7f6, #9cc2cf);
+        box-shadow:  10px 10px 30px #2125296b,
+               -10px -10px 30px #ffffffa6;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <h1>Visualization of Quranic Subjects (Ontology)</h1> -->
+    <div class="link-row">
+      {% for link in links %}
+      <a class="ontology-link" href="#" data-ontologylevel1="{{ link }}">{{ link }}</a>
+      {% endfor %}
+    </div>
+    <div class="link-row" id="ontologylevel2-container"></div>
+    <div class="link-row" id="ontologylevel3-container"></div>
+    <div class="link-row" id="ontologylevel4-container"></div>
+
+
+    <script>
+      const ontologyLinks = document.querySelectorAll('.ontology-link');
+    
+      ontologyLinks.forEach(link => {
+        link.addEventListener('click', (event) => {
+          event.preventDefault();
+          link.style.background = 'lightblue';
+    
+          ontologyLinks.forEach(otherLink => {
+            if (otherLink !== link) {
+              otherLink.style.display = 'none';
+            }
+          });
+    
+          const ontologylevel1 = link.dataset.ontologylevel1;
+          const xhr = new XMLHttpRequest();
+          xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+              const ontologylevel2Values = JSON.parse(xhr.responseText);
+              const ontologylevel2Container = document.getElementById('ontologylevel2-container');
+              ontologylevel2Container.innerHTML = '';
+              const ontologylevel3Container = document.getElementById('ontologylevel3-container');
+              ontologylevel3Container.innerHTML = '';
+              const ontologylevel4Container = document.getElementById('ontologylevel4-container');
+              ontologylevel4Container.innerHTML = '';
+    
+              ontologylevel2Values.forEach(value => {
+                const ontologylevel2Link = document.createElement('a');
+                ontologylevel2Link.textContent = value;
+                ontologylevel2Link.href = '#';
+                ontologylevel2Link.className = 'ontologylevel2-link';
+                ontologylevel2Link.style.marginTop = '15px';
+    
+                ontologylevel2Link.addEventListener('click', (event) => {
+                  event.preventDefault();
+                  ontologylevel2Link.style.background = 'lightblue';
+    
+                  const ontologylevel2Links = document.querySelectorAll('.ontologylevel2-link');
+                  ontologylevel2Links.forEach(otherLink => {
+                    if (otherLink !== ontologylevel2Link) {
+                      otherLink.style.display = 'none';
+                    }
+                  });
+    
+                  const ontologylevel2 = ontologylevel2Link.textContent;
+                  const xhr = new XMLHttpRequest();
+                  xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                      const ontologylevel3Values = JSON.parse(xhr.responseText);
+                      const ontologylevel3Container = document.getElementById('ontologylevel3-container');
+                      ontologylevel3Container.innerHTML = '';
+                      const ontologylevel4Container = document.getElementById('ontologylevel4-container');
+                      ontologylevel4Container.innerHTML = '';
+    
+                      ontologylevel3Values.forEach(value => {
+                        const ontologylevel3Link = document.createElement('a');
+                        ontologylevel3Link.textContent = value;
+                        ontologylevel3Link.href = '#';
+                        ontologylevel3Link.className = 'ontologylevel3-link';
+                        ontologylevel3Link.style.marginTop = '15px';
+    
+                        ontologylevel3Link.addEventListener('click', (event) => {
+                          event.preventDefault();
+                          ontologylevel3Link.style.background = 'lightblue';
+    
+                          // Hide other level 3 links
+                          const ontologylevel3Links = document.querySelectorAll('.ontologylevel3-link');
+                          ontologylevel3Links.forEach(otherLink => {
+                            if (otherLink !== ontologylevel3Link) {
+                              otherLink.style.display = 'none';
+                            }
+                          });
+    
+                          const ontologylevel3 = ontologylevel3Link.textContent;
+                          const xhr = new XMLHttpRequest();
+                          xhr.onreadystatechange = function() {
+                            if (xhr.readyState === 4 && xhr.status === 200) {
+                              const ontologylevel4Values = JSON.parse(xhr.responseText);
+                              const ontologylevel4Container = document.getElementById('ontologylevel4-container');
+                              ontologylevel4Container.innerHTML = '';
+    
+                              ontologylevel4Values.forEach(value => {
+                                const ontologylevel4Link = document.createElement('a');
+                                ontologylevel4Link.textContent = value;
+                                ontologylevel4Link.href = '#';
+                                ontologylevel4Link.className = 'ontologylevel4-link';
+                                ontologylevel4Link.style.marginTop = '15px';
+    
+                                ontologylevel4Link.addEventListener('click', (event) => {
+                                  event.preventDefault();
+                                  ontologylevel4Link.style.background = 'lightblue';
+                                  // alert('Clicked ontologylevel4 link: ' + value);
+    
+                                  // const newUrl = 'http://localhost:3000/QuranicSubjects';
+                                  // window.location.href = newUrl;
+                                });
+                                ontologylevel4Container.appendChild(ontologylevel4Link);
+                              });
+                            }
+                          };
+                          xhr.open('GET', '/ontologylevel4?ontologylevel1=' + ontologylevel1 + '&ontologylevel2=' + ontologylevel2 + '&ontologylevel3=' + ontologylevel3, true);
+                          xhr.send();
+                        });
+                        ontologylevel3Container.appendChild(ontologylevel3Link);
+                      });
+                    }
+                  };
+                  xhr.open('GET', '/ontologylevel3?ontologylevel1=' + ontologylevel1 + '&ontologylevel2=' + ontologylevel2, true);
+                  xhr.send();
+                });
+                ontologylevel2Container.appendChild(ontologylevel2Link);
+              });
+            }
+          };
+          xhr.open('GET', '/ontologylevel2?ontologylevel1=' + ontologylevel1, true);
+          xhr.send();
+        });
+      });
+    </script>
+  </body>
+</html>

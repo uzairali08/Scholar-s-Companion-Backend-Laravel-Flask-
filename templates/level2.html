@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Ontology Links</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+  <style>
+    /* Display links in a single row */
+    .link-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    /* Style for ontology links */
+    .ontology-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: black;
+      font-weight: bold;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: yellow;
+    }
+    /* Style for ontology level 2 values */
+    .ontology-level-2 {
+      margin-top: 10px;
+    }
+  </style>
+  <body>
+    <h1>Ontology Links</h1>
+    <div class="link-row">
+      {% for link in links %}
+        <a class="ontology-link" href="#" data-level1="{{ link }}">{{ link }}</a>
+      {% endfor %}
+    </div>
+    <div id="level-2-container"></div>
+    <script>
+      $(function() {
+        $(".ontology-link").click(function() {
+          var level1 = $(this).data("level1");
+          $.ajax({
+            url: "/get_level_2_values",
+            method: "POST",
+            data: { level1: level1 },
+            success: function(data) {
+              $("#level-2-container").html(data);
+            },
+            error: function(xhr, status, error) {
+              console.error("Error:", error);
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
